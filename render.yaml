@@ -1,0 +1,13 @@
+# render.yaml — Render deployment configuration
+# Render detects this file automatically when you connect the repository.
+
+services:
+  - type: web
+    name: churnai
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+    # Free tier — upgrade to "standard" for always-on (no cold starts)
+    # plan: free

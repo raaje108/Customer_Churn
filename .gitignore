@@ -1,0 +1,31 @@
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# NOTE: artifacts/ is intentionally NOT ignored.
+# The trained model files (scaler.pkl, feature_columns.pkl, churn_model.keras)
+# are small (~82KB total) and must be committed so Render can serve predictions
+# without re-running the full training pipeline on every deploy.

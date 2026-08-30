@@ -1,0 +1,26 @@
+# ── .dockerignore ──────────────────────────────────────────────────────────
+# Keeps the Docker build context small by excluding files that shouldn't
+# be copied into the image.
+
+node_modules/
+npm-debug.log*
+
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+.git/
+.gitignore
+.DS_Store
+*.log
+.env
+
+# Dev-only docs / tooling
+README.md
+save_artifacts.py
+main.ipynb
+
+# NOTE: artifacts/ is intentionally included — the trained model must be
+#       present inside the Docker image for the Python worker to load.

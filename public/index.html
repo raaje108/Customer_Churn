@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChurnAI — Customer Churn Predictor</title>
+  <meta name="description" content="AI-powered customer churn prediction using a deep learning ANN trained on IBM Telco data." />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Background ambient orbs ─────────────────────────────────────────── -->
+  <div class="bg-layer" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── App wrapper ─────────────────────────────────────────────────────── -->
+  <div class="app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>ChurnAI</span>
+      </div>
+
+      <div class="service-status" id="serviceStatus">
+        <span class="status-dot loading" id="statusDot"></span>
+        <span class="status-label" id="statusLabel">ML Loading…</span>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-title">
+        Customer Churn
+        <span class="gradient-text">Predictor</span>
+      </h1>
+      <p class="hero-sub">
+        Deep Learning ANN · IBM Telco Dataset · ~80% Accuracy
+      </p>
+    </section>
+
+    <!-- ── Main predictor card ──────────────────────────────────────────── -->
+    <div class="card" id="mainCard">
+
+      <!-- Step indicator -->
+      <div class="stepper" id="stepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Personal</span>
+        </div>
+        <div class="step-track"></div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Services</span>
+        </div>
+        <div class="step-track"></div>
+        <div class="step-item" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Billing</span>
+        </div>
+      </div>
+
+      <!-- ── PANEL 1: Personal ─────────────────────────────────────────── -->
+      <div class="panel active" id="panel-1">
+        <div class="panel-header">
+          <h2>Personal Information</h2>
+          <p>Basic demographic details about the customer</p>
+        </div>
+
+        <div class="form-grid">
+
+          <!-- Gender -->
+          <div class="field full">
+            <label class="field-label">Gender</label>
+            <div class="toggle-group" id="genderGroup">
+              <button class="tgl-btn active" data-field="gender" data-value="Male">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M6 20v-2a6 6 0 0112 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Male
+              </button>
+              <button class="tgl-btn" data-field="gender" data-value="Female">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 14v4M10 18h4M6 20v-2a6 6 0 0112 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Female
+              </button>
+            </div>
+          </div>
+
+          <!-- Senior Citizen -->
+          <div class="field">
+            <label class="field-label">Senior Citizen</label>
+            <p class="field-hint">Age 65 or older</p>
+            <label class="switch">
+              <input type="checkbox" id="SeniorCitizen" data-field="SeniorCitizen" data-true="1" data-false="0">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </label>
+          </div>
+
+          <!-- Partner -->
+          <div class="field">
+            <label class="field-label">Has Partner</label>
+            <p class="field-hint">Married or living together</p>
+            <label class="switch">
+              <input type="checkbox" id="Partner" data-field="Partner" data-true="Yes" data-false="No">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </label>
+          </div>
+
+          <!-- Dependents -->
+          <div class="field">
+            <label class="field-label">Has Dependents</label>
+            <p class="field-hint">Children or others in household</p>
+            <label class="switch">
+              <input type="checkbox" id="Dependents" data-field="Dependents" data-true="Yes" data-false="No">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── PANEL 2: Services ─────────────────────────────────────────── -->
+      <div class="panel" id="panel-2">
+        <div class="panel-header">
+          <h2>Services &amp; Usage</h2>
+          <p>Active subscriptions and service tenure</p>
+        </div>
+
+        <div class="form-grid">
+
+          <!-- Tenure slider -->
+          <div class="field full">
+            <label class="field-label">
+              Tenure
+              <span class="slider-val" id="tenureDisplay">0 months</span>
+            </label>
+            <input type="range" class="range" id="tenureSlider"
+                   data-field="tenure" min="0" max="72" value="0" step="1" />
+            <div class="range-ticks">
+              <span>0 mo</span><span>18 mo</span><span>36 mo</span><span>54 mo</span><span>72 mo</span>
+            </div>
+          </div>
+
+          <!-- Phone Service -->
+          <div class="field">
+            <label class="field-label">Phone Service</label>
+            <p class="field-hint">Landline phone subscription</p>
+            <label class="switch">
+              <input type="checkbox" id="PhoneService" data-field="PhoneService"
+                     data-true="Yes" data-false="No" checked>
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </label>
+          </div>
+
+          <!-- Multiple Lines -->
+          <div class="field" id="multiLinesField">
+            <label class="field-label">Multiple Lines</label>
+            <div class="toggle-group">
+              <button class="tgl-btn active" data-field="MultipleLines" data-value="No">No</button>
+              <button class="tgl-btn" data-field="MultipleLines" data-value="Yes">Yes</button>
+              <button class="tgl-btn" data-field="MultipleLines" data-value="No phone service">N/A</button>
+            </div>
+          </div>
+
+          <!-- Internet Service -->
+          <div class="field full">
+            <label class="field-label">Internet Service</label>
+            <div class="card-select" id="internetSelect">
+              <div class="sel-card active" data-field="InternetService" data-value="DSL">
+                <span class="sel-icon">🌐</span>
+                <strong>DSL</strong>
+                <small>Standard broadband</small>
+              </div>
+              <div class="sel-card" data-field="InternetService" data-value="Fiber optic">
+                <span class="sel-icon">⚡</span>
+                <strong>Fiber Optic</strong>
+                <small>High-speed fiber</small>
+              </div>
+              <div class="sel-card" data-field="InternetService" data-value="No">
+                <span class="sel-icon">🚫</span>
+                <strong>None</strong>
+                <small>No internet</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Internet add-ons (hidden when internet = No) -->
+          <div class="field full" id="internetAddons">
+            <label class="field-label">Internet Add-ons</label>
+            <div class="addons-grid">
+              <label class="addon-item">
+                <span class="addon-label">Online Security</span>
+                <label class="switch mini">
+                  <input type="checkbox" data-field="OnlineSecurity" data-true="Yes" data-false="No">
+                  <span class="switch-track"><span class="switch-thumb"></span></span>
+                </label>
+              </label>
+              <label class="addon-item">
+                <span class="addon-label">Online Backup</span>
+                <label class="switch mini">
+                  <input type="checkbox" data-field="OnlineBackup" data-true="Yes" data-false="No">
+                  <span class="switch-track"><span class="switch-thumb"></span></span>
+                </label>
+              </label>
+              <label class="addon-item">
+                <span class="addon-label">Device Protection</span>
+                <label class="switch mini">
+                  <input type="checkbox" data-field="DeviceProtection" data-true="Yes" data-false="No">
+                  <span class="switch-track"><span class="switch-thumb"></span></span>
+                </label>
+              </label>
+              <label class="addon-item">
+                <span class="addon-label">Tech Support</span>
+                <label class="switch mini">
+                  <input type="checkbox" data-field="TechSupport" data-true="Yes" data-false="No">
+                  <span class="switch-track"><span class="switch-thumb"></span></span>
+                </label>
+              </label>
+              <label class="addon-item">
+                <span class="addon-label">Streaming TV</span>
+                <label class="switch mini">
+                  <input type="checkbox" data-field="StreamingTV" data-true="Yes" data-false="No">
+                  <span class="switch-track"><span class="switch-thumb"></span></span>
+                </label>
+              </label>
+              <label class="addon-item">
+                <span class="addon-label">Streaming Movies</span>
+                <label class="switch mini">
+                  <input type="checkbox" data-field="StreamingMovies" data-true="Yes" data-false="No">
+                  <span class="switch-track"><span class="switch-thumb"></span></span>
+                </label>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── PANEL 3: Billing ──────────────────────────────────────────── -->
+      <div class="panel" id="panel-3">
+        <div class="panel-header">
+          <h2>Account &amp; Billing</h2>
+          <p>Contract type, payment method, and charges</p>
+        </div>
+
+        <div class="form-grid">
+
+          <!-- Contract -->
+          <div class="field full">
+            <label class="field-label">Contract Type</label>
+            <div class="card-select">
+              <div class="sel-card active" data-field="Contract" data-value="Month-to-month">
+                <span class="sel-icon">📅</span>
+                <strong>Month-to-Month</strong>
+                <small>Maximum flexibility</small>
+              </div>
+              <div class="sel-card" data-field="Contract" data-value="One year">
+                <span class="sel-icon">📆</span>
+                <strong>One Year</strong>
+                <small>Annual commitment</small>
+              </div>
+              <div class="sel-card" data-field="Contract" data-value="Two year">
+                <span class="sel-icon">🗓️</span>
+                <strong>Two Years</strong>
+                <small>Best loyalty rate</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="field full">
+            <label class="field-label">Payment Method</label>
+            <div class="card-select two-col">
+              <div class="sel-card active" data-field="PaymentMethod" data-value="Electronic check">
+                <span class="sel-icon">💳</span>
+                <strong>Electronic Check</strong>
+              </div>
+              <div class="sel-card" data-field="PaymentMethod" data-value="Mailed check">
+                <span class="sel-icon">✉️</span>
+                <strong>Mailed Check</strong>
+              </div>
+              <div class="sel-card" data-field="PaymentMethod" data-value="Bank transfer (automatic)">
+                <span class="sel-icon">🏦</span>
+                <strong>Bank Transfer</strong>
+              </div>
+              <div class="sel-card" data-field="PaymentMethod" data-value="Credit card (automatic)">
+                <span class="sel-icon">💰</span>
+                <strong>Credit Card</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paperless Billing -->
+          <div class="field">
+            <label class="field-label">Paperless Billing</label>
+            <p class="field-hint">Electronic invoices only</p>
+            <label class="switch">
+              <input type="checkbox" data-field="PaperlessBilling" data-true="Yes" data-false="No">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+            </label>
+          </div>
+
+          <!-- Monthly Charges -->
+          <div class="field">
+            <label class="field-label">Monthly Charges</label>
+            <div class="num-input-wrap">
+              <span class="currency">$</span>
+              <input type="number" class="num-input" id="monthlyCharges"
+                     data-field="MonthlyCharges" min="0" max="200"
+                     step="0.01" value="50" placeholder="50.00" />
+            </div>
+          </div>
+
+          <!-- Total Charges -->
+          <div class="field">
+            <label class="field-label">Total Charges</label>
+            <div class="num-input-wrap">
+              <span class="currency">$</span>
+              <input type="number" class="num-input" id="totalCharges"
+                     data-field="TotalCharges" min="0"
+                     step="0.01" value="600" placeholder="600.00" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── PANEL: Results ────────────────────────────────────────────── -->
+      <div class="panel" id="panel-result">
+        <div class="result-wrap">
+
+          <!-- SVG ring gauge -->
+          <div class="ring-wrap">
+            <svg class="ring-svg" id="ringSvg" viewBox="0 0 140 140">
+              <circle class="ring-bg"  cx="70" cy="70" r="58" />
+              <circle class="ring-fg" id="ringFg" cx="70" cy="70" r="58" />
+            </svg>
+            <div class="ring-center">
+              <span class="ring-pct" id="ringPct">0%</span>
+              <span class="ring-sub">Churn Risk</span>
+            </div>
+          </div>
+
+          <!-- Text results -->
+          <div class="result-info">
+            <div class="risk-pill" id="riskPill">—</div>
+            <h3 class="verdict" id="verdict">—</h3>
+            <p class="verdict-sub" id="verdictSub">—</p>
+
+            <div class="detail-rows">
+              <div class="detail-row">
+                <span>Churn Probability</span>
+                <strong id="detProb">—</strong>
+              </div>
+              <div class="detail-row">
+                <span>Risk Level</span>
+                <strong id="detRisk">—</strong>
+              </div>
+              <div class="detail-row">
+                <span>Prediction</span>
+                <strong id="detPred">—</strong>
+              </div>
+            </div>
+
+            <button class="btn-outline" id="btnReset">
+              ↩ Predict Another Customer
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Navigation footer ────────────────────────────────────────── -->
+      <div class="nav-bar" id="navBar">
+        <button class="btn-nav back"  id="btnBack"  disabled>← Back</button>
+        <div class="nav-dots" id="navDots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <button class="btn-nav next"  id="btnNext">Next →</button>
+      </div>
+
+    </div><!-- /.card -->
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+      <div class="spinner"></div>
+      <p>Running neural network inference…</p>
+    </div>
+
+    <!-- Error toast -->
+    <div class="toast hidden" id="errorToast">
+      <span id="toastMsg">Error</span>
+    </div>
+
+  </div><!-- /.app -->
+
+  <script src="js/app.js"></script>
+</body>
+</html>

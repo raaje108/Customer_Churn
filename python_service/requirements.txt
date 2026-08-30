@@ -1,0 +1,8 @@
+# Python dependencies for the ML worker (Render production).
+# Pinned ranges keep builds reproducible on Linux (Render uses Python 3.11).
+tensorflow>=2.15,<2.18
+scikit-learn>=1.3,<2.0
+pandas>=2.0,<3.0
+numpy>=1.24,<2.0
+joblib>=1.3
+h5py>=3.9
